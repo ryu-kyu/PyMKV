@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "pymkv"
+version = "0.1.0"
+description = ""
+authors = ["Eric Ryu <ericryu19@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+ffmpeg-python = "^0.2.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
