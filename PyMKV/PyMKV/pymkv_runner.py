@@ -1,7 +1,15 @@
 import argparse
+import os
+import json
+import subprocess
+import ffmpeg
+
+from pathlib import Path
 from typing import List
 
-import pymkv.logger as logger
+from PyMKV.logger import PyMkvLogger
+
+LOGGER = PyMkvLogger(__file__).logger
 
 
 def parse_args(args: List[str] = None) -> argparse.Namespace:
@@ -25,7 +33,7 @@ def parse_args(args: List[str] = None) -> argparse.Namespace:
         "--input-dir",
         help="Path to directory containing MKV file(s)",
         required=True,
-        type=argparse.FileType("r")
+        type=str
     )
     arg_parser.add_argument(
         "--new-filenames",
@@ -33,6 +41,11 @@ def parse_args(args: List[str] = None) -> argparse.Namespace:
         required=False,
         type=argparse.FileType("r")
     )
+    arg_parser.epilog = """Example:
+
+    # after setting $INPUT_DIR to be where mkv/video files are stored
+    poetry run python PyMKV/pymkv_runner.py --input-dir $INPUT_DIR
+    """
 
     return arg_parser.parse_args(args)
 
@@ -44,7 +57,29 @@ def run(args: List[str] = None) -> None:
     """
     parsed_args = parse_args(args)
 
-    LOGGER = logger.PyMkvLogger(__file__).logger
+    ffmpeg_install_retcode = subprocess.run(
+        ["ffmpeg", "-h"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.STDOUT
+    ).returncode
+    if ffmpeg_install_retcode != 0:
+        LOGGER.error(
+            "'ffmpeg' is not installed. Install before running script."
+        )
+        return
+
+    if not (os.path.exists(parsed_args.input_dir) and
+            os.path.isdir(parsed_args.input_dir)):
+        LOGGER.error(
+            "Given input dir, (%s) is either not a valid path or is not a directory",
+            parsed_args.input_dir
+        )
+        return
+
+    dir_iterator = Path(parsed_args.input_dir).iterdir()
+    for file in dir_iterator:
+        LOGGER.info("File: %s", file)
+        print(json.dumps(ffmpeg.probe(file), indent=4))
 
 
 if __name__ == "__main__":

@@ -3,8 +3,7 @@ import os
 import sys
 import shutil
 
-import pymkv.constants as constants
-
+import PyMKV.constants as constants
 
 OUTPUT_DIR = os.path.join(
     os.path.dirname(os.path.realpath(__file__)), constants.OUTPUT_DIR_NAME
@@ -28,7 +27,7 @@ class PyMkvLogger:
         - write to same log file located in 'OUTPUT_DIR'
         - print log to stdout
     """
-    logger = logging.Logger = None
+    logger: logging.Logger = None
 
     def __init__(self, logger_name: str) -> None:
         """
@@ -46,10 +45,10 @@ class PyMkvLogger:
         """
         Attaches file handler and stdout handlers to logger
         """
-        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler = logging.StreamHandler()
         file_handler = logging.FileHandler(os.path.join(str(OUTPUT_DIR), constants.LOG_FILE_NAME))
         log_formatter = logging.Formatter(
-            "%s(levelname)s %(name)s %(asctime)s %(message)s"
+            "%(levelname)s %(name)s %(asctime)s %(message)s"
         )
 
         file_handler.setFormatter(log_formatter)
