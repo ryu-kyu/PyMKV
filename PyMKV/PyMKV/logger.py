@@ -1,6 +1,5 @@
 import logging
 import os
-import sys
 import shutil
 
 import PyMKV.constants as constants
@@ -27,6 +26,7 @@ class PyMkvLogger:
         - write to same log file located in 'OUTPUT_DIR'
         - print log to stdout
     """
+
     logger: logging.Logger = None
 
     def __init__(self, logger_name: str) -> None:
@@ -46,7 +46,9 @@ class PyMkvLogger:
         Attaches file handler and stdout handlers to logger
         """
         console_handler = logging.StreamHandler()
-        file_handler = logging.FileHandler(os.path.join(str(OUTPUT_DIR), constants.LOG_FILE_NAME))
+        file_handler = logging.FileHandler(
+            os.path.join(str(OUTPUT_DIR), constants.LOG_FILE_NAME)
+        )
         log_formatter = logging.Formatter(
             "%(levelname)s %(name)s %(asctime)s %(message)s"
         )

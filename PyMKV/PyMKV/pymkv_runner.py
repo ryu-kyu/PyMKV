@@ -20,26 +20,26 @@ def parse_args(args: List[str] = None) -> argparse.Namespace:
     """
     arg_parser = argparse.ArgumentParser(
         description="Utility tool to parse, edit, re-compile MKV files",
-        formatter_class=argparse.RawDescriptionHelpFormatter
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     arg_parser.add_argument(
         "--rename-all",
         help="Rename all files in batch",
         action="store_true",
         required=False,
-        default=False
+        default=False,
     )
     arg_parser.add_argument(
         "--input-dir",
         help="Path to directory containing MKV file(s)",
         required=True,
-        type=str
+        type=str,
     )
     arg_parser.add_argument(
         "--new-filenames",
         help="Path to file containing new filenames to rename to",
         required=False,
-        type=argparse.FileType("r")
+        type=argparse.FileType("r"),
     )
     arg_parser.epilog = """Example:
 
@@ -58,28 +58,25 @@ def run(args: List[str] = None) -> None:
     parsed_args = parse_args(args)
 
     ffmpeg_install_retcode = subprocess.run(
-        ["ffmpeg", "-h"],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.STDOUT
+        ["ffmpeg", "-h"], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT
     ).returncode
     if ffmpeg_install_retcode != 0:
-        LOGGER.error(
-            "'ffmpeg' is not installed. Install before running script."
-        )
+        LOGGER.error("'ffmpeg' is not installed. Install before running script.")
         return
 
-    if not (os.path.exists(parsed_args.input_dir) and
-            os.path.isdir(parsed_args.input_dir)):
+    if not (
+        os.path.exists(parsed_args.input_dir) and os.path.isdir(parsed_args.input_dir)
+    ):
         LOGGER.error(
             "Given input dir, (%s) is either not a valid path or is not a directory",
-            parsed_args.input_dir
+            parsed_args.input_dir,
         )
         return
 
     dir_iterator = Path(parsed_args.input_dir).iterdir()
     for file in dir_iterator:
         LOGGER.info("File: %s", file)
-        print(json.dumps(ffmpeg.probe(file), indent=4))
+        LOGGER.info(json.dumps(ffmpeg.probe(file), indent=4))
 
 
 if __name__ == "__main__":
