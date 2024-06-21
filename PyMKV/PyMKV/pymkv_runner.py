@@ -80,4 +80,7 @@ def run(args: List[str] = None) -> None:
 
 
 if __name__ == "__main__":
+    # cwd = Path(os.path.dirname(os.path.realpath(__file__)))
+    # tests_dir = os.path.join(str(cwd.parent), "tests/data")
+    # run(["--input-dir", tests_dir])
     run()
