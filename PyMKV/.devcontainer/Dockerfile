@@ -8,9 +8,10 @@ RUN add-apt-repository ppa:deadsnakes/ppa
 RUN apt-get update && \
     apt-get install -y python3.11 python3-pip
 
-# Install Poetry
-ARG POETRY_VERSION=1.8.3
-RUN pip install "poetry==${POETRY_VERSION}"
+# Install Poetry from Git
+RUN curl -sSL https://install.python-poetry.org | python3 - --git https://github.com/python-poetry/poetry.git@main
+# Add Poetry to PATH
+ENV PATH="$HOME/.local/bin:$PATH"
 
 # Docker is already isolated, so turn venv off 
 ENV POETRY_VIRTUALENVS_CREATE=false
