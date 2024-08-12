@@ -1,25 +1,21 @@
-FROM ubuntu:latest
+FROM python:3.11-slim
+
+# Change shell to bash
+SHELL ["/bin/bash", "-c"] 
 
 # Setup to add package repo and install python3.11
 RUN apt-get update && apt-get install -y software-properties-common
-RUN add-apt-repository ppa:deadsnakes/ppa
-
-# Install Python 3.11 and pip
-RUN apt-get update && \
-    apt-get install -y python3.11 python3-pip
 
 # Install Poetry from Git
-RUN curl -sSL https://install.python-poetry.org | python3 - --git https://github.com/python-poetry/poetry.git@main
-# Add Poetry to PATH
-ENV PATH="$HOME/.local/bin:$PATH"
+RUN pip install poetry
 
-# Docker is already isolated, so turn venv off 
-ENV POETRY_VIRTUALENVS_CREATE=false
+ENV POETRY_HOME="/opt/poetry" \
+    POETRY_VIRTUALENVS_CREATE=false \
+    POETRY_VIRTUALENVS_IN_PROJECT=false \
+    POETRY_NO_INTERACTION=1
+ENV PATH="$PATH:$POETRY_HOME/bin"
 
 WORKDIR /workspace
-
-# Install project dependencies using Poetry
-RUN poetry install
 
 # Set the entrypoint command
 CMD ["sleep", "infinity"]
