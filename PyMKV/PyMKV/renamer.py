@@ -1,6 +1,9 @@
 import os
 import argparse
+import sys
+
 import logger
+import constants
 
 from typing import List
 
@@ -54,6 +57,14 @@ def rename_files(args: argparse.Namespace) -> None:
             if lines[i] == "\n":
                 continue
             line = lines[i].strip()
+            for invalid_char in constants.INVALID_PATH_CHARS:
+                if invalid_char not in line:
+                    continue
+                LOGGER.error(
+                    "Line called (%s) is contains an invalid file path character", line
+                )
+                LOGGER.warn("No files have been renamed... Aborting renamer script!")
+                sys.exit(1)
             if line:
                 eps.append(line)
         else:
@@ -85,6 +96,8 @@ def rename_files(args: argparse.Namespace) -> None:
         new_filename = os.path.join(args.dest_folder, new_filename)
 
         os.rename(prev_filename, new_filename)
+
+    LOGGER.info("Renaming successful! -- See destination folder for changes!")
 
 
 def run(raw_args: List[str] = None) -> None:

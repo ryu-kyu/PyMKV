@@ -12,3 +12,6 @@ MKV_PROP_EDIT_WIN = "C:\\Program Files\\MKVToolNix\\mkvpropedit.exe"
 LINUX_OS = "Linux"
 DARWIN_OS = "Darwin"
 WINDOWS_OS = "Windows"
+
+# Invalid path characters
+INVALID_PATH_CHARS = {"<", ">", ":", '"', "/", "\\", "|", "?", "*"}
