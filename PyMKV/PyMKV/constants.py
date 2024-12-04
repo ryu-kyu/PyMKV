@@ -2,4 +2,13 @@
 OUTPUT_DIR_NAME = "outputs"
 
 # Log file name
-LOG_FILE_NAME = "pymkv.log"
+LOG_FILE_NAME = "mkv_renamer.log"
+
+# mkvmerge and mkvpropedit executables path
+MKV_MERGE_WIN = "C:\\Program Files\\MKVToolNix\\mkvmerge.exe"
+MKV_PROP_EDIT_WIN = "C:\\Program Files\\MKVToolNix\\mkvpropedit.exe"
+
+# Operating System Names
+LINUX_OS = "Linux"
+DARWIN_OS = "Darwin"
+WINDOWS_OS = "Windows"
