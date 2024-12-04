@@ -1,14 +1,16 @@
 [tool.poetry]
 name = "pymkv"
 version = "0.1.0"
-description = ""
+description = "MKV Toolbox via Python"
 authors = ["Eric Ryu <ericryu19@gmail.com>"]
 readme = "README.md"
-packages = [{ include = "PyMKV" }]
+packages = [{ include = "pymkv" }]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-ffmpeg-python = "^0.2.0"
+beautifulsoup4 = "^4.12.3"
+pandas = "^2.2.3"
+urllib3 = "^2.2.3"
 
 
 [build-system]

@@ -1,8 +1,8 @@
 import logging
 import os
 import shutil
+import constants
 
-import PyMKV.constants as constants
 
 OUTPUT_DIR = os.path.join(
     os.path.dirname(os.path.realpath(__file__)), constants.OUTPUT_DIR_NAME
@@ -18,9 +18,9 @@ def remove_output_dir() -> None:
     shutil.rmtree(OUTPUT_DIR)
 
 
-class PyMkvLogger:
+class MKVLogger:
     """
-    PyMKV Logger
+    MKV Logger
 
     Each Python module uses its own logger instance to:
         - write to same log file located in 'OUTPUT_DIR'
