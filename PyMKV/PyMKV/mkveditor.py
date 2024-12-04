@@ -190,6 +190,10 @@ def parse_args(raw_args: list[str] = None) -> argparse.Namespace:
         help="Directory containing MKV files.",
         required=True,
     )
+    parser.epilog = """Example:
+
+    poetry run pymkv/mkveditor.py --directory C:\\Users\\user\\Downloads\\Videos
+    """
     args = parser.parse_args(raw_args)
     return args
 
@@ -203,9 +207,4 @@ def run(raw_args: list[str] = None) -> None:
 
 
 if __name__ == "__main__":
-    run(
-        [
-            "--directory",
-            "C:\\Users\\user\\Downloads\\KamiKatsu",
-        ]
-    )
+    run()
