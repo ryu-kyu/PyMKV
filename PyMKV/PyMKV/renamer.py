@@ -32,6 +32,10 @@ def parse_args(raw_args: List[str] = None) -> argparse.Namespace:
         required=False,
         type=int,
     )
+    parser.epilog = """Example:
+    
+    poetry run pymkv/renamer.py --file ./eps.txt --dest-folder C:\\Users\\kyuhy\\Downloads\\Videos
+    """
 
     parsed_args = parser.parse_args(raw_args)
     return parsed_args
@@ -97,11 +101,4 @@ def run(raw_args: List[str] = None) -> None:
 
 
 if __name__ == "__main__":
-    run(
-        [
-            "--file",
-            "./eps.txt",
-            "--dest-folder",
-            "C:\\Users\\kyuhy\\Downloads\\Beelzebub",
-        ]
-    )
+    run()
