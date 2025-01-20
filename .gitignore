@@ -161,4 +161,4 @@ cython_debug/
 **/*.DS_STORE
 
 # Custom for project
-PyMKV/eps.txt
+PyMKV/eps*.txt
