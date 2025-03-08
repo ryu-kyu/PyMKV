@@ -166,14 +166,34 @@ def modify_files_in_dir(directory: str) -> None:
                     LOGGER.info(
                         f"{i + 1}. Track ID: {track_id}, Language: {lang}, Name: {name}"
                     )
-                sub_choice = int(input("Select subtitle track (number): ")) - 1
+                while True:
+                    stdin = input("Select subtitle track (number): ")
+                    if stdin != "":
+                        if (
+                            stdin.isdigit()
+                            and int(stdin) <= len(subtitle_tracks)
+                            and int(stdin) >= 0
+                        ):
+                            break
+                    print("Invalid input. Please enter a valid number.")
+                sub_choice = int(stdin) - 1
                 subtitle_id = subtitle_tracks[sub_choice][0]
 
                 # Display and select audio track
                 LOGGER.info("\nAudio Tracks:")
                 for i, (track_id, lang) in enumerate(audio_tracks):
                     LOGGER.info(f"{i + 1}. Track ID: {track_id}, Language: {lang}")
-                aud_choice = int(input("Select audio track (number): ")) - 1
+                while True:
+                    stdin = input("Select audio track (number): ")
+                    if stdin != "":
+                        if (
+                            stdin.isdigit()
+                            and int(stdin) <= len(audio_tracks)
+                            and int(stdin) >= 0
+                        ):
+                            break
+                    print("Invalid input. Please enter a valid number.")
+                aud_choice = int(stdin) - 1
                 audio_id = audio_tracks[aud_choice][0]
 
                 # Modify the file
