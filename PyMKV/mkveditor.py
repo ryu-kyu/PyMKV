@@ -98,7 +98,7 @@ class MKVEditor:
         )
 
 
-def list_tracks(file_path: str) -> tuple[list[str]]:
+def list_tracks(file_path: str) -> tuple[list[str], list[str]]:
     """
     List subtitle and audio tracks of an MKV file.
     :param file_path: Path to MKV file
@@ -126,16 +126,18 @@ def list_tracks(file_path: str) -> tuple[list[str]]:
         return [], []
 
 
-def modify_file(file_path: str, subtitle_id: str, audio_id: str) -> None:
+def modify_file(file_path: str, audio_id: str, subtitle_id: str = None) -> None:
     """
     Modify an MKV file based on user selection.
     :param file_path: Path to MKV file
-    :param subtitle_id: ID of subtitle track
     :param audio_id: ID of audio track
+    :param subtitle_id: ID of subtitle track.
+    If None, subtitles will be disabled.
     """
     mkv_instance = MKVEditor(file_path)
     # Set default and forced flags for the selected subtitle track
-    mkv_instance.set_force_default_track(subtitle_id, True)
+    if subtitle_id is not None:
+        mkv_instance.set_force_default_track(subtitle_id, True)
 
     # Set default and forced flags for the selected audio track
     mkv_instance.set_force_default_track(audio_id, True)
@@ -143,7 +145,7 @@ def modify_file(file_path: str, subtitle_id: str, audio_id: str) -> None:
     # Clear flags for all other tracks
     subtitle_tracks, audio_tracks = list_tracks(file_path)
     for track_id, _, _ in subtitle_tracks:
-        if track_id == subtitle_id:
+        if subtitle_id is not None and track_id == subtitle_id:
             continue
         mkv_instance.set_force_default_track(track_id, False)
     for track_id, _ in audio_tracks:
@@ -173,38 +175,40 @@ def modify_files_in_dir(directory: str) -> None:
 
                 # Display and select subtitle track
                 LOGGER.info("\nSubtitle Tracks:")
+                LOGGER.info("0. Disable subtitles")
                 for i, (track_id, lang, name) in enumerate(subtitle_tracks):
                     LOGGER.info(
                         f"{i + 1}. Track ID: {track_id}, Language: {lang}, Name: {name}"
                     )
+                max_idx = len(subtitle_tracks)
                 while True:
-                    stdin = input("Select subtitle track (number): ")
-                    if stdin != "":
-                        if stdin.isdigit() and len(subtitle_tracks) >= int(stdin) >= 0:
+                    stdin = input(f"Select subtitle track [0–{max_idx}]: ")
+                    if stdin != "" and stdin.isdigit():
+                        sub_choice = int(stdin)
+                        if 0 <= sub_choice <= max_idx:
                             break
-                    print("Invalid input. Please enter a valid number.")
-                sub_choice = int(stdin) - 1
-                subtitle_id = subtitle_tracks[sub_choice][0]
+                    print(f"Invalid input. Enter a number between 0 and {max_idx}.")
+                if sub_choice == 0:
+                    subtitle_id = None
+                else:
+                    subtitle_id = subtitle_tracks[sub_choice - 1][0]
 
                 # Display and select audio track
                 LOGGER.info("\nAudio Tracks:")
                 for i, (track_id, lang) in enumerate(audio_tracks):
                     LOGGER.info(f"{i + 1}. Track ID: {track_id}, Language: {lang}")
+                max_idx = len(audio_tracks)
                 while True:
-                    stdin = input("Select audio track (number): ")
-                    if stdin != "":
-                        if (
-                            stdin.isdigit()
-                            and int(stdin) <= len(audio_tracks)
-                            and int(stdin) >= 0
-                        ):
+                    stdin = input(f"Select subtitle track [0–{max_idx}]: ")
+                    if stdin != "" and stdin.isdigit():
+                        aud_choice = int(stdin)
+                        if 0 <= aud_choice <= max_idx:
                             break
-                    print("Invalid input. Please enter a valid number.")
-                aud_choice = int(stdin) - 1
-                audio_id = audio_tracks[aud_choice][0]
+                    print(f"Invalid input. Enter a number between 0 and {max_idx}.")
+                audio_id = audio_tracks[aud_choice - 1][0]
 
                 # Modify the file
-                modify_file(file_path, subtitle_id, audio_id)
+                modify_file(file_path, audio_id, subtitle_id)
                 LOGGER.info(f"Modification complete for {file_path}!")
 
 
