@@ -23,11 +23,22 @@ class MKVEditor:
         if platform.system() == constants.WINDOWS_OS:
             self.mkv_merge_exec = constants.MKV_MERGE_WIN
             self.mkv_prop_edit_exec = constants.MKV_PROP_EDIT_WIN
+        elif platform.system() == constants.DARWIN_OS:
+            self.mkv_merge_exec = constants.MKV_MERGE_MAC
+            self.mkv_prop_edit_exec = constants.MKV_PROP_EDIT_MAC
         else:
             LOGGER.error(
-                "MKV Editor not yet implemented for %s or %s",
-                constants.DARWIN_OS,
+                "MKV Editor not yet implemented for %s.",
                 constants.LINUX_OS,
+            )
+            sys.exit(1)
+
+        if not os.path.exists(self.mkv_merge_exec) or not os.path.exists(
+            self.mkv_prop_edit_exec
+        ):
+            LOGGER.error(
+                "MKV Editor executables not found. "
+                "Please ensure MKVToolNix is installed and the paths are correct."
             )
             sys.exit(1)
 
@@ -169,11 +180,7 @@ def modify_files_in_dir(directory: str) -> None:
                 while True:
                     stdin = input("Select subtitle track (number): ")
                     if stdin != "":
-                        if (
-                            stdin.isdigit()
-                            and int(stdin) <= len(subtitle_tracks)
-                            and int(stdin) >= 0
-                        ):
+                        if stdin.isdigit() and len(subtitle_tracks) >= int(stdin) >= 0:
                             break
                     print("Invalid input. Please enter a valid number.")
                 sub_choice = int(stdin) - 1
