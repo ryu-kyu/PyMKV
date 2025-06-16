@@ -182,7 +182,7 @@ def modify_files_in_dir(directory: str) -> None:
                     )
                 max_idx = len(subtitle_tracks)
                 while True:
-                    stdin = input(f"Select subtitle track [0–{max_idx}]: ")
+                    stdin = input(f"Select subtitle track [0-{max_idx}]: ")
                     if stdin != "" and stdin.isdigit():
                         sub_choice = int(stdin)
                         if 0 <= sub_choice <= max_idx:
@@ -199,7 +199,7 @@ def modify_files_in_dir(directory: str) -> None:
                     LOGGER.info(f"{i + 1}. Track ID: {track_id}, Language: {lang}")
                 max_idx = len(audio_tracks)
                 while True:
-                    stdin = input(f"Select subtitle track [0–{max_idx}]: ")
+                    stdin = input(f"Select subtitle track [1-{max_idx}]: ")
                     if stdin != "" and stdin.isdigit():
                         aud_choice = int(stdin)
                         if 0 <= aud_choice <= max_idx:
