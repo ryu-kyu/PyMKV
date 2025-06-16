@@ -14,7 +14,7 @@ poetry shell
 To run a specific script, type in below Poetry command:
 
 ```shell
-poetry run pymkv/<script_name>.py
+poetry run python pymkv/<script_name>.py
 ```
 
 ### Additional Notes
