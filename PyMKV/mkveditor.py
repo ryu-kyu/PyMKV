@@ -4,6 +4,7 @@ import platform
 import subprocess
 import argparse
 import json
+import typing
 import logger
 import constants
 
@@ -20,29 +21,29 @@ class MKVEditor:
 
     def __init__(self, file_path: str) -> None:
         self.file_path = file_path
-        if platform.system() == constants.WINDOWS_OS:
+        platform_type = platform.system()
+        if platform_type == constants.WINDOWS_OS:
             self.mkv_merge_exec = constants.MKV_MERGE_WIN
             self.mkv_prop_edit_exec = constants.MKV_PROP_EDIT_WIN
-        elif platform.system() == constants.DARWIN_OS:
+        elif platform_type == constants.DARWIN_OS:
             self.mkv_merge_exec = constants.MKV_MERGE_MAC
             self.mkv_prop_edit_exec = constants.MKV_PROP_EDIT_MAC
         else:
-            LOGGER.error(
-                "MKV Editor not yet implemented for %s.",
-                constants.LINUX_OS,
-            )
-            sys.exit(1)
+            assert platform_type == constants.LINUX_OS
+            self.mkv_merge_exec = constants.MKV_MERGE_LINUX
+            self.mkv_prop_edit_exec = constants.MKV_PROP_EDIT_LINUX
 
         if not os.path.exists(self.mkv_merge_exec) or not os.path.exists(
             self.mkv_prop_edit_exec
         ):
             LOGGER.error(
                 "MKV Editor executables not found. "
-                "Please ensure MKVToolNix is installed and the paths are correct."
+                "Please ensure MKVToolNix is installed and "
+                "the paths are correct."
             )
             sys.exit(1)
 
-    def get_json_properties(self) -> dict:
+    def get_json_properties(self) -> typing.Dict[typing.Any, typing.Any]:
         """
         Get MKV file properties
         """
@@ -98,7 +99,9 @@ class MKVEditor:
         )
 
 
-def list_tracks(file_path: str) -> tuple[list[str], list[str]]:
+def list_tracks(
+    file_path: str,
+) -> tuple[list[tuple[str, str, str]], list[tuple[str, str]]]:
     """
     List subtitle and audio tracks of an MKV file.
     :param file_path: Path to MKV file
@@ -107,8 +110,8 @@ def list_tracks(file_path: str) -> tuple[list[str], list[str]]:
     try:
         mkv_instance = MKVEditor(file_path)
         track_data = mkv_instance.get_json_properties()
-        subtitle_tracks = []
-        audio_tracks = []
+        subtitle_tracks: list[tuple[str, str, str]] = []
+        audio_tracks: list[tuple[str, str]] = []
 
         for track in track_data.get("tracks", []):
             uid = track["properties"]["uid"]
@@ -126,7 +129,9 @@ def list_tracks(file_path: str) -> tuple[list[str], list[str]]:
         return [], []
 
 
-def modify_file(file_path: str, audio_id: str, subtitle_id: str = None) -> None:
+def modify_file(
+    file_path: str, audio_id: str, subtitle_id: typing.Optional[str] = None
+) -> None:
     """
     Modify an MKV file based on user selection.
     :param file_path: Path to MKV file
@@ -170,7 +175,9 @@ def modify_files_in_dir(directory: str) -> None:
 
                 subtitle_tracks, audio_tracks = list_tracks(file_path)
                 if not subtitle_tracks or not audio_tracks:
-                    LOGGER.warn("No subtitle or audio tracks found. Skipping file.")
+                    LOGGER.warning(
+                        "No subtitle or audio tracks found. Skipping file.",
+                    )
                     continue
 
                 # Display and select subtitle track
@@ -178,7 +185,8 @@ def modify_files_in_dir(directory: str) -> None:
                 LOGGER.info("0. Disable subtitles")
                 for i, (track_id, lang, name) in enumerate(subtitle_tracks):
                     LOGGER.info(
-                        f"{i + 1}. Track ID: {track_id}, Language: {lang}, Name: {name}"
+                        f"{i + 1}. Track ID: {track_id}, "
+                        f"Language: {lang}, Name: {name}"
                     )
                 max_idx = len(subtitle_tracks)
                 while True:
@@ -187,7 +195,9 @@ def modify_files_in_dir(directory: str) -> None:
                         sub_choice = int(stdin)
                         if 0 <= sub_choice <= max_idx:
                             break
-                    print(f"Invalid input. Enter a number between 0 and {max_idx}.")
+                    LOGGER.info(
+                        f"Invalid input. Enter a number between 0 and {max_idx}."
+                    )
                 if sub_choice == 0:
                     subtitle_id = None
                 else:
@@ -196,7 +206,9 @@ def modify_files_in_dir(directory: str) -> None:
                 # Display and select audio track
                 LOGGER.info("\nAudio Tracks:")
                 for i, (track_id, lang) in enumerate(audio_tracks):
-                    LOGGER.info(f"{i + 1}. Track ID: {track_id}, Language: {lang}")
+                    LOGGER.info(
+                        f"{i + 1}. Track ID: {track_id}, Language: {lang}",
+                    )
                 max_idx = len(audio_tracks)
                 while True:
                     stdin = input(f"Select subtitle track [1-{max_idx}]: ")
@@ -204,7 +216,9 @@ def modify_files_in_dir(directory: str) -> None:
                         aud_choice = int(stdin)
                         if 0 <= aud_choice <= max_idx:
                             break
-                    print(f"Invalid input. Enter a number between 0 and {max_idx}.")
+                    LOGGER.info(
+                        f"Invalid input. Enter a number between 0 and {max_idx}."
+                    )
                 audio_id = audio_tracks[aud_choice - 1][0]
 
                 # Modify the file
@@ -212,11 +226,12 @@ def modify_files_in_dir(directory: str) -> None:
                 LOGGER.info(f"Modification complete for {file_path}!")
 
 
-def parse_args(raw_args: list[str] = None) -> argparse.Namespace:
+def parse_args(raw_args: typing.Optional[list[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Modify MKV files' tracks and metadata."
     )
     parser.add_argument(
+        "-d",
         "--directory",
         help="Directory containing MKV files.",
         required=True,
@@ -229,7 +244,7 @@ def parse_args(raw_args: list[str] = None) -> argparse.Namespace:
     return args
 
 
-def run(raw_args: list[str] = None) -> None:
+def run(raw_args: typing.Optional[list[str]] = None) -> None:
     args = parse_args(raw_args)
 
     LOGGER.info("On Windows, run script through PowerShell!")

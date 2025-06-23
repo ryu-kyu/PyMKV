@@ -27,7 +27,7 @@ class MKVLogger:
         - print log to stdout
     """
 
-    logger: logging.Logger = None
+    logger: logging.Logger
 
     def __init__(self, logger_name: str) -> None:
         """

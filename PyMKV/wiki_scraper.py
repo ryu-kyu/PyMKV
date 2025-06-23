@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 HTTP = urllib3.PoolManager()
 
 
-def parse_args(raw_args: List[str] = None) -> argparse.Namespace:
+def parse_args(raw_args: Optional[List[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Scrape episodes from Wikipedia",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -40,19 +40,19 @@ def parse_args(raw_args: List[str] = None) -> argparse.Namespace:
     return parsed_args
 
 
-def parse_html(html: str, search_heading: str) -> list:
+def parse_html(html: str, search_heading: str) -> List[str]:
     """
     Parse HTML for episode names in a given heading section.
     :param html: HTML content as a string
     :param search_heading: Name of the heading to look under
     :return: List of episode names
     """
-    episodes = []
+    episodes: List[str] = []
     soup = BeautifulSoup(html, "html.parser")
 
     # Locate the heading with the season name
     heading = soup.find(
-        lambda tag: tag.name
+        lambda tag: tag.name != ""
         and tag.name.startswith("h")
         and search_heading in tag.get_text()
     )
@@ -63,9 +63,11 @@ def parse_html(html: str, search_heading: str) -> list:
     # Parse the HTML to get the table data
     html_data = StringIO(html)
     try:
-        df = pd.read_html(html_data)[1]  # Assume second table contains episodes
+        # Assume second table contains episodes
+        df = pd.read_html(html_data)[1]  # type: ignore
     except IndexError:
-        df = pd.read_html(html_data)[0]  # Fall back to first table if only one exists
+        # Fall back to first table if only one exists
+        df = pd.read_html(html_data)[0]  # type: ignore
 
     # Try to find a column with "Title" in it (case-insensitive)
     title_column = None
@@ -102,7 +104,7 @@ def get_html_contents(url: str) -> Optional[str]:
     return str(response.data)
 
 
-def run(raw_args: List[str] = None) -> None:
+def run(raw_args: Optional[List[str]] = None) -> None:
     args = parse_args(raw_args)
 
     html = None
@@ -122,11 +124,4 @@ def run(raw_args: List[str] = None) -> None:
 
 
 if __name__ == "__main__":
-    run(
-        [
-            "--from-html-file",
-            "./html_output.html",
-            "--table-heading",
-            "Season 1 (2015)",
-        ]
-    )
+    run()

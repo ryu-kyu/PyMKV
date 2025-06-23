@@ -9,6 +9,8 @@ MKV_MERGE_WIN = "C:\\Program Files\\MKVToolNix\\mkvmerge.exe"
 MKV_PROP_EDIT_WIN = "C:\\Program Files\\MKVToolNix\\mkvpropedit.exe"
 MKV_MERGE_MAC = "/opt/homebrew/bin/mkvmerge"
 MKV_PROP_EDIT_MAC = "/opt/homebrew/bin/mkvpropedit"
+MKV_MERGE_LINUX = "/usr/bin/mkvmerge"
+MKV_PROP_EDIT_LINUX = "/usr/bin/mkvpropedit"
 
 # Operating System Names
 LINUX_OS = "Linux"
