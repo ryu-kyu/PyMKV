@@ -96,6 +96,7 @@ def rename_files(args: argparse.Namespace) -> None:
         )
         return
 
+    filenames.sort()
     for idx, filename in enumerate(filenames):
         prev_filename = os.path.join(args.directory, filename)
         file_ext = pathlib.Path(prev_filename).suffix
@@ -104,6 +105,7 @@ def rename_files(args: argparse.Namespace) -> None:
             new_filename = f"{idx + 1}. {eps[idx]}{file_ext}"
         new_filename = os.path.join(args.directory, new_filename)
 
+        LOGGER.info(f"Renamed from ({prev_filename}) to ({new_filename})")
         os.rename(prev_filename, new_filename)
 
     LOGGER.info(

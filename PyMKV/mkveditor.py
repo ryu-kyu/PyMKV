@@ -217,7 +217,7 @@ def modify_files_in_dir(directory: str) -> None:
                         if 0 <= aud_choice <= max_idx:
                             break
                     LOGGER.info(
-                        f"Invalid input. Enter a number between 0 and {max_idx}."
+                        f"Invalid input. Enter a number between 1 and {max_idx}."
                     )
                 audio_id = audio_tracks[aud_choice - 1][0]
 
